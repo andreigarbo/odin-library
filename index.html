@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" async></script>
+</head>
+<body>
+    <button id="add-book-button">Add Book</button>
+    <div class="container">
+        <div class="book-list-grid">
+            
+        </div>
+    </div>
+    <form id="add-book-form" class="form-hidden">
+        <label for="book-title">Title</label>
+        <input type="text" id="book-title" name="book-title">
+        <label for="book-author">Author</label>
+        <input type="text" id="book-author" name="book-author">
+        <label for="book-page-count">Page Count</label>
+        <input type="text" id="book-page-count" name="book-page-count">
+        <label for="book-read">Read</label>
+        <input type="checkbox" id="book-read" name="book-read">
+        <input type="submit" value="Add Book">
+        <button id="close-add-book-form">Close</button>
+    </form>
+</body>
+</html>
