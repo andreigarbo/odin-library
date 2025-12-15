@@ -3,6 +3,18 @@ body {
     padding: 0;
     width: 100vw;
     height: 100vh;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.add-book-button-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+#add-book-form input[type=submit], #add-book-form button{
+    margin-top: 10px;
 }
 
 .form-visible {
@@ -20,8 +32,44 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background-color: antiquewhite;
 }
 
 .form-hidden {
     display: none;
+}
+
+#book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 200px);
+    align-items: center;
+}
+
+.book-card {
+    display: flex;
+    flex-direction: column;
+    border-style: solid;
+    border-width: 2px;
+    align-items: center;
+    justify-content: center;
+}
+
+.book-card p {
+    margin: 0;
+    padding: 0;
+}
+
+.book-card p:nth-child(2n){
+    padding-bottom: 10px;
+}
+
+.book-card p:nth-child(2n+1) {
+    font-weight: 800;
+}
+
+.book-card-buttons button {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    border-style: solid;
+    padding: 3px;
 }
