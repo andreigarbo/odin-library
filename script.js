@@ -1,183 +1,235 @@
-const myLibrary = [];
 const MARK_AS_READ = "Mark as Read";
 const MARK_AS_UNREAD = "Mark as Unread";
 
-function Book(title, author, pageCount, read) {
-    this.id = crypto.randomUUID();
-    this.title = title;
-    this.author = author;
-    this.pageCount = pageCount;
-    this.read = read;
-}
+class Book {
+    constructor(title, author, pageCount, read) {
 
-function clearFormFields() {
-    addBookForm.reset();
-}
+        if (title == "" || title == null) {
+            alert("Please enter a title");
+            return null;
+        }
+        if (author == "" || author == null) {
+            alert("Please enter an author");
+            return null;
+        }
+        if (pageCount == "" || pageCount == null) {
+            alert("Please enter a page count");
+            return null;
+        }
 
-function updateBookGrid() {
-
-    bookGrid.innerHTML = "";
-
-    for (var key in myLibrary) {
-        let book = myLibrary[key];
-        addBookCardToGrid(book);
-    }
-}
-
-function addBookCardToGrid(book) {
-
-    let markAsReadButtonText;
-
-    let bookCard = document.createElement("div");
-    bookCard.classList.add("book-card");
-    bookCard.dataset.id = book.id;
-
-    let titlePara = document.createElement("p");
-    titlePara.innerText = "Title:";
-
-    let titleParaContent = document.createElement("p");
-    titleParaContent.innerText = book.title;
-    titleParaContent.classList.add("book-card-title");
-
-    let authorPara = document.createElement("p");
-    authorPara.innerText = "Author:";
-
-    let authorParaContent = document.createElement("p");
-    authorParaContent.innerText = book.author;
-    authorParaContent.classList.add("book-card-author");
-
-    let pageCountPara = document.createElement("p");
-    pageCountPara.innerText = "Page count:";
-
-    let pageCountParaContent = document.createElement("p");
-    pageCountParaContent.innerText = book.pageCount;
-    pageCountParaContent.classList.add("book-card-page-count");
-
-    let readPara = document.createElement("p");
-    readPara.innerText = "Read:";
-
-    let readCheckbox = document.createElement("input");
-    readCheckbox.type = "checkbox";
-    readCheckbox.checked = book.read;
-    readCheckbox.addEventListener("click", (event) => {
-        event.preventDefault();
-    });
-
-    if (book.read) {
-        markAsReadButtonText = MARK_AS_UNREAD;
-    } else {
-        markAsReadButtonText = MARK_AS_READ;
+        this._id = crypto.randomUUID();
+        this._title = title;
+        this._author = author;
+        this._pageCount = pageCount;
+        this._read = read;
     }
 
-    let buttonDiv = document.createElement("div");
-    buttonDiv.classList.add("book-card-buttons");
+    get title(){
+        return this._title;
+    }
 
-    let markBookAsReadButton = document.createElement("button");
-    markBookAsReadButton.textContent = markAsReadButtonText;
-    markBookAsReadButton.classList.add("book-card-mark-as-read");
+    get id() {
+        return this._id;
+    }
 
-    markBookAsReadButton.addEventListener("click", () => {
-        markBookAsRead(book.id);
-    });
+    set title(newTitle) {
+        this._title = newTitle;
+    }
 
-    let deleteBookButton = document.createElement("button");
-    deleteBookButton.textContent = "Delete";
-    deleteBookButton.classList.add("book-card-delete");
+    get author() {
+        return this._author;
+    }
 
-    deleteBookButton.addEventListener("click", () => {
-        deleteBook(book.id);
-    });
+    get pageCount() {
+        return this._pageCount;
+    }
 
-    buttonDiv.append(markBookAsReadButton, deleteBookButton);
+    get read() { 
+        return this._read;
+    }
 
-    bookCard.append(titlePara, titleParaContent, authorPara, authorParaContent, pageCountPara, pageCountParaContent, readPara, readCheckbox, buttonDiv);
-    bookGrid.append(bookCard);
-}
+    set read(readStatus) {
+        if (readStatus == true || readStatus == false) this._read = readStatus;
+    }
 
-function markBookAsRead(bookId) {
-    for (var key in myLibrary) {
-        let book = myLibrary[key];
-        if (bookId == book.id) {
-            book.read = !book.read;
+    toggleReadState() {
+        if (this._read == true) {
+            this._read = false;
+        } else {
+            this._read = true;
         }
     }
-    updateBookGrid();
-}
+};
 
-function deleteBook(bookId) {
-    let index = myLibrary.findIndex(element => element.id == bookId);
-
-    myLibrary.splice(index, 1);
-    updateBookGrid();
-}
-
-function addBookToLibrary() {
-    let title = titleField.value;
-
-    if (title == "" || title == null) {
-        alert("Please enter a title");
-        return;
+class Library {
+    constructor() {
+        this._content = [];
     }
 
-    let author = authorField.value;
-
-    if (author == "" || author == null) {
-        alert("Please enter an author");
-        return;
+    get content() {
+        return this._content;
     }
 
-    let pageCount = pageCountField.value;
-
-    if (pageCount == "" || pageCount == null) {
-        alert("Please enter a page count");
-        return;
+    addBook(book) {
+        this._content.push(book);
     }
 
-    let read = readField.checked ? true : false;
-
-    let book = new Book(title, author, pageCount, read);
-    clearFormFields();
-
-    myLibrary.push(book);
-
-    updateBookGrid();
-}
-
-function toggleFormVisibility(form) {
-    if (form.classList.contains("form-hidden")) {
-        form.classList.remove("form-hidden");
-        form.classList.add("form-visible");
-    } else {
-        form.classList.remove("form-visible");
-        form.classList.add("form-hidden");
+    getBook(bookId) {
+        let index = this._content.findIndex(element => element.id == bookId);
+        return this._content[index];
     }
-}
 
-let addBookButton = document.getElementById("add-book-button");
-let addBookForm = document.getElementById("add-book-form");
-let closeBookFormButton = document.getElementById("close-add-book-form");
+    removeBook(bookId) {
+        let index = this._content.findIndex(element => element.id == bookId);
+        this._content.splice(index, 1);
+    }
+};
 
-let titleField = document.getElementById("book-title");
-let authorField = document.getElementById("book-author");
-let pageCountField = document.getElementById("book-page-count");
-let readField = document.getElementById("book-read");
+class DisplayController {
+    constructor() {
+        this.addBookButton = document.getElementById("add-book-button");
+        this.addBookForm = document.getElementById("add-book-form");
+        this.closeBookFormButton = document.getElementById("close-add-book-form");
 
-let bookGrid = document.getElementById("book-grid");
+        this.titleField = document.getElementById("book-title");
+        this.authorField = document.getElementById("book-author");
+        this.pageCountField = document.getElementById("book-page-count");
+        this.readField = document.getElementById("book-read");
 
-addBookForm.onsubmit = (event) => {
-    event.preventDefault();
-    addBookToLibrary();
-    updateBookGrid();
-    toggleFormVisibility(addBookForm);
-    clearFormFields();
-}
+        this.bookGrid = document.getElementById("book-grid");
 
-addBookButton.addEventListener("click", ()=> {
-    toggleFormVisibility(addBookForm);
-});
+        this.library = new Library();
 
-closeBookFormButton.addEventListener("click", (event)=> {
-    event.preventDefault();
-    toggleFormVisibility(addBookForm);
-    clearFormFields();
-})
+        this.bindEvents();
+    }
+
+    updateBookGrid() {
+        this.bookGrid.innerHTML = '';
+
+        let currentLibraryContent = this.library.content;
+        for (let key in currentLibraryContent) {
+            let book = currentLibraryContent[key];
+            this.bookGrid.append(this.createBookCard(book));
+        }
+    }
+
+    createBookCard(book) {
+        let markAsReadButtonText;
+
+        let bookCard = document.createElement("div");
+        bookCard.classList.add("book-card");
+        bookCard.dataset.id = book.id;
+
+        let titlePara = document.createElement("p");
+        titlePara.innerText = "Title:";
+
+        let titleParaContent = document.createElement("p");
+        titleParaContent.innerText = book.title;
+        titleParaContent.classList.add("book-card-title");
+
+        let authorPara = document.createElement("p");
+        authorPara.innerText = "Author:";
+
+        let authorParaContent = document.createElement("p");
+        authorParaContent.innerText = book.author;
+        authorParaContent.classList.add("book-card-author");
+
+        let pageCountPara = document.createElement("p");
+        pageCountPara.innerText = "Page count:";
+
+        let pageCountParaContent = document.createElement("p");
+        pageCountParaContent.innerText = book.pageCount;
+        pageCountParaContent.classList.add("book-card-page-count");
+
+        let readPara = document.createElement("p");
+        readPara.innerText = "Read:";
+
+        let readCheckbox = document.createElement("input");
+        readCheckbox.type = "checkbox";
+        readCheckbox.checked = book.read;
+        readCheckbox.addEventListener("click", (event) => {
+            event.preventDefault();
+        });
+
+        if (book.read) {
+            markAsReadButtonText = MARK_AS_UNREAD;
+        } else {
+            markAsReadButtonText = MARK_AS_READ;
+        }
+
+        let buttonDiv = document.createElement("div");
+        buttonDiv.classList.add("book-card-buttons");
+
+        let markBookAsReadButton = document.createElement("button");
+        markBookAsReadButton.textContent = markAsReadButtonText;
+        markBookAsReadButton.classList.add("book-card-mark-as-read");
+
+        markBookAsReadButton.addEventListener("click", () => {
+            this.library.getBook(book.id).toggleReadState();
+            this.updateBookGrid();
+        });
+
+        let deleteBookButton = document.createElement("button");
+        deleteBookButton.textContent = "Delete";
+        deleteBookButton.classList.add("book-card-delete");
+
+        deleteBookButton.addEventListener("click", () => {
+            // deleteBook(book.id);
+            this.library.removeBook(book.id);
+            this.updateBookGrid();
+        });
+
+        buttonDiv.append(markBookAsReadButton, deleteBookButton);
+
+        bookCard.append(titlePara, titleParaContent, authorPara, authorParaContent, pageCountPara, pageCountParaContent, readPara, readCheckbox, buttonDiv);
+        return bookCard;
+    }
+
+    toggleFormVisibility() {
+        if (this.addBookForm.classList.contains("form-hidden")) {
+            this.addBookForm.classList.remove("form-hidden");
+            this.addBookForm.classList.add("form-visible");
+        } else {
+            this.addBookForm.classList.remove("form-visible");
+            this.addBookForm.classList.add("form-hidden");
+        }
+    }
+
+    bindEvents() {
+        this.addBookForm.onsubmit = (event) => {
+            event.preventDefault();
+            const newBook = this.createBook();
+            if (newBook == null)
+                return;
+            this.library.addBook(newBook);
+            this.updateBookGrid();
+            this.toggleFormVisibility();
+            this.clearFormFields();
+        }
+
+        this.addBookButton.addEventListener("click", ()=> {
+            this.toggleFormVisibility();
+        });
+
+        this.closeBookFormButton.addEventListener("click", (event)=> {
+            event.preventDefault();
+            this.toggleFormVisibility();
+            this.clearFormFields();
+        })
+    }
+
+    createBook() {
+        const bookTitle = this.titleField.value;
+        const bookAuthor = this.authorField.value;
+        const bookPageCount = this.pageCountField.value;
+        const bookRead = this.readField.checked ? true : false;
+
+        return new Book(bookTitle, bookAuthor, bookPageCount, bookRead);
+    }
+
+    clearFormFields() {
+        this.addBookForm.reset();
+    }
+};
+
+const displayController = new DisplayController();
